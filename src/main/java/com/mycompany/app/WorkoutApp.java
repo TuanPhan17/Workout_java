@@ -1,43 +1,79 @@
-package com.mycompany.app;
+package com.mycompany.app; // Package name
 
-import java.util.Scanner; // Allows user input from terminal
+import java.util.Scanner; // Allows user input
 
-public class WorkoutApp {
+public class WorkoutApp { // Main application class
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { // Program starts here
 
         Scanner sc = new Scanner(System.in); // Create Scanner object
+        WorkoutLog log = new WorkoutLog();   // Create WorkoutLog to store workouts
 
-        System.out.println("=== Create a Workout ==="); // Title
+        boolean running = true; // Controls the menu loop
 
-        System.out.print("Enter date (MM/DD/YR): ");
-        String date = sc.nextLine(); // Read date input
+        while (running) { // Keep program running until user exits
 
-        System.out.print("Enter exercise name: ");
-        String exercise = sc.nextLine(); // Read exercise input
+            // Display menu options
+            System.out.println("\n==== Workout Menu ====");
+            System.out.println("1. Add Workout");
+            System.out.println("2. View Workouts");
+            System.out.println("3. Exit");
+            System.out.print("Choose an option: ");
 
-        System.out.print("Enter weight used: ");
-        double weight = sc.nextDouble(); // Read weight
+            int choice = sc.nextInt(); // Read user choice
+            sc.nextLine(); // Clear leftover newline
 
-        System.out.print("Enter reps: ");
-        int reps = sc.nextInt(); // Read reps
+            switch (choice) { // Check which option user selected
 
-        System.out.print("Enter number of sets: ");
-        int sets = sc.nextInt(); // Read sets
-        sc.nextLine(); // Clear leftover newline from nextInt
+                case 1: // Add a workout
 
-        System.out.print("Any notes? (press Enter to skip): ");
-        String note = sc.nextLine(); // Read note (can be empty)
+                    System.out.print("Enter date (MM/DD/YR): ");
+                    String date = sc.nextLine(); // Get date
 
-        System.out.print("Mark as completed? (y/n): ");
-        String answer = sc.nextLine(); // Read y or n
-        boolean completed = answer.equalsIgnoreCase("y"); // Convert to true/false
+                    System.out.print("Enter exercise name: ");
+                    String exercise = sc.nextLine(); // Get exercise name
 
-        Workout workout = new Workout(date, exercise, weight, reps, sets, note, completed); // Create Workout object
+                    System.out.print("Enter weight used: ");
+                    double weight = sc.nextDouble(); // Get weight
 
-        System.out.println("\nWorkout Created Successfully!");
-        System.out.println(workout); // Print workout using toString()
+                    System.out.print("Enter reps: ");
+                    int reps = sc.nextInt(); // Get reps
 
-        sc.close(); // Close Scanner
+                    System.out.print("Enter number of sets: ");
+                    int sets = sc.nextInt(); // Get sets
+                    sc.nextLine(); // Clear newline
+
+                    System.out.print("Any notes? ");
+                    String note = sc.nextLine(); // Get notes
+
+                    System.out.print("Mark as completed? (y/n): ");
+                    boolean completed = sc.nextLine().equalsIgnoreCase("y"); // Convert to true/false
+
+                    // Create Workout object
+                    Workout workout = new Workout(date, exercise, weight, reps, sets, note, completed);
+
+                    log.addWorkout(workout); // Add workout to the log
+
+                    System.out.println("Workout added!"); // Confirmation message
+                    break; // End case 1
+
+                case 2: // View workouts
+
+                    log.listAllWorkouts(); // Show all stored workouts
+                    break; // End case 2
+
+                case 3: // Exit program
+
+                    running = false; // Stop the loop
+                    System.out.println("Exiting program..."); // Exit message
+                    break; // End case 3
+
+                default: // If user enters invalid option
+
+                    System.out.println("Invalid choice."); // Show error message
+            }
+        }
+
+        sc.close(); // Close Scanner before program ends
     }
 }
