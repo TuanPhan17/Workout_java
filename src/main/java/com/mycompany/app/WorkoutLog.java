@@ -62,4 +62,9 @@ public class WorkoutLog {
     public int getTotalWorkouts() {
         return workoutList.size();
     }
+
+    // Return all workouts so persistence layer can save them.
+    public List<Workout> getAllWorkouts() {
+        return new ArrayList<>(workoutList);
+    }
 }

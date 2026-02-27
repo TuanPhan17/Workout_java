@@ -1,5 +1,6 @@
 package com.mycompany.app; // Package name
 
+import java.util.List;
 import java.util.Scanner; // Allows user input
 
 public class WorkoutApp { // Main application class
@@ -8,6 +9,20 @@ public class WorkoutApp { // Main application class
 
         Scanner sc = new Scanner(System.in); // Create Scanner object
         WorkoutLog log = new WorkoutLog();   // Create WorkoutLog to store workouts
+        FileStorage storage = new FileStorage();
+
+        // Load existing workout history from file when app starts.
+        try {
+            List<Workout> loadedWorkouts = storage.loadWorkoutObjects();
+            for (Workout workout : loadedWorkouts) {
+                log.addWorkout(workout);
+            }
+            if (!loadedWorkouts.isEmpty()) {
+                System.out.println("Loaded " + loadedWorkouts.size() + " workout(s) from storage.");
+            }
+        } catch (FileStorage.FileStorageException e) {
+            System.out.println("Could not load saved workouts: " + e.getMessage());
+        }
 
         boolean running = true; // Controls the menu loop
 
@@ -63,6 +78,18 @@ public class WorkoutApp { // Main application class
                     break; // End case 2
 
                 case 3: // Exit program
+
+                    // Save all workouts before exiting.
+                    try {
+                        boolean saved = storage.saveWorkoutObjects(log.getAllWorkouts());
+                        if (saved) {
+                            System.out.println("Workouts saved successfully.");
+                        } else {
+                            System.out.println("Workouts saved with some skipped invalid rows.");
+                        }
+                    } catch (FileStorage.FileStorageException e) {
+                        System.out.println("Error saving workouts: " + e.getMessage());
+                    }
 
                     running = false; // Stop the loop
                     System.out.println("Exiting program..."); // Exit message
